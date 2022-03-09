@@ -2,45 +2,44 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-function RecentScreen() {
+import RecentScreen from './screens/RecentScreen';
+import DashboardScreen from './screens/DashboardScreen';
+import LocationScreen from './screens/LocationScreen';
+import HistoryScreen from './screens/HistoryScreen';
+import AccountScreen from './screens/AccountScreen';
+
+const Stack = createStackNavigator();
+
+function AccountStack() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Recent!</Text>
-    </View>
+    <Stack.Navigator
+      initialRouteName="AccountHome"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#0096DA',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <Stack.Screen
+        name="AccountHome"
+        component={AccountScreen}
+        options={{title: 'Account'}}
+      />
+    </Stack.Navigator>
   );
 }
 
-function DashboardScreen() {
+function DashboardStack() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Dashboard!</Text>
-    </View>
-  );
-}
-
-function LocationScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Location!</Text>
-    </View>
-  );
-}
-
-function HistoryScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>History!</Text>
-    </View>
-  );
-}
-
-function AccountScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Account!</Text>
     </View>
   );
 }
@@ -90,7 +89,7 @@ export default function App() {
         <Tab.Screen name="Dashboard" component={DashboardScreen} />
         <Tab.Screen name="Location" component={LocationScreen} />
         <Tab.Screen name="History" component={HistoryScreen} />
-        <Tab.Screen name="Account" component={AccountScreen} />
+        <Tab.Screen name="Account" component={AccountStack} />
       </Tab.Navigator>
     </NavigationContainer>
   );

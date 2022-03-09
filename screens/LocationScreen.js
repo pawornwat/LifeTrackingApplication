@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Dashboard = () => {
+const LocationScreen = () => {
   return (
     <View>
-      <Text>Dashboard</Text>
+      <Text>Location</Text>
     </View>
   )
 }
 
-export default Dashboard
+export default LocationScreen

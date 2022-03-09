@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Account = () => {
+const HistoryScreen = () => {
   return (
     <View>
-      <Text>Account</Text>
+      <Text>History</Text>
     </View>
   )
 }
 
-export default Account
+export default HistoryScreen
