@@ -4,6 +4,8 @@ import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import RecentScreen from './screens/RecentScreen';
@@ -11,6 +13,8 @@ import DashboardScreen from './screens/DashboardScreen';
 import LocationScreen from './screens/LocationScreen';
 import HistoryScreen from './screens/HistoryScreen';
 import AccountScreen from './screens/AccountScreen';
+
+import { ThisMonth, LastMonth, NextMonth } from './screens/RecentScreen';
 
 const Stack = createStackNavigator();
 
@@ -41,6 +45,20 @@ function DashboardStack() {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Dashboard!</Text>
     </View>
+  );
+}
+
+const TopTab = createMaterialTopTabNavigator();
+
+function RecentTabs() {
+  return (
+    <TopTab.Navigator
+      initialRouteName = 'This Month'
+    >
+      <TopTab.Screen name="Last Month" component={LastMonth} />
+      <TopTab.Screen name="This Month" component={ThisMonth} />
+      <TopTab.Screen name="Next Month" component={NextMonth} />
+    </TopTab.Navigator>
   );
 }
 

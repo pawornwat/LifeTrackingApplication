@@ -1,42 +1,147 @@
 import React from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { SafeAreaView, View, Text, FlatList, StyleSheet, StatusBar, TouchableOpacity } from 'react-native'
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-const Tab = createMaterialTopTabNavigator();
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const TopTab = createMaterialTopTabNavigator();
+
+const DATA = [
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    day: 'Monday',
+    date: '10',
+    month: 'March',
+    year: '2022',
+    cost: '150$',
+    iconType: 'ios-car-sport',
+    destination: 'Home',
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    day: 'Tuesday',
+    date: '11',
+    month: 'March',
+    year: '2022',
+    cost: '120$',
+    iconType: 'ios-bus',
+    destination: 'Central',
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    day: 'Friday',
+    date: '14',
+    month: 'March',
+    year: '2022',
+    cost: '180$',
+    iconType: 'ios-car',
+    destination: 'Secon',
+  },
+];
 
 function ThisMonth() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>This Month!</Text>
-    </View>
+    renderContent()
   );
 }
 
 function LastMonth() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Last Month!</Text>
-    </View>
+    renderContent()
   );
 }
 
 function NextMonth() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Next Month!</Text>
+      <Text>No List!</Text>
     </View>
+  );
+}
+
+export { ThisMonth, LastMonth, NextMonth };
+
+const Item = ({ day, date, month, year, iconType, destination, cost }) => (
+  <View style={styles.item}>
+    <Text style={styles.title}>{day}</Text>
+    <Text style={styles.content}>{date} {month} {year}</Text>
+    <Text style={styles.content}><Ionicons name={iconType} size={32} /> {destination} {cost}</Text>
+  </View>
+);
+
+function renderContent() {
+  const renderItem = ({ item }) => (
+    <Item day={item.day} 
+          date={item.date}
+          month={item.month}
+          year={item.year}
+          iconType={item.iconType}
+          destination={item.destination}
+          cost={item.cost}
+    />
+  );
+
+  return(
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={DATA}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+      />
+      <TouchableOpacity
+        // onPress={}
+      >
+        <Ionicons name='ios-add-circle' size={60} color={'#23b4f7'} style={{alignSelf:'flex-end', paddingRight:25}}/>
+      </TouchableOpacity>
+      <Text>Test</Text>
+    </SafeAreaView>
+  );
+}
+
+function RecentTabs() {
+  return (
+    <TopTab.Navigator
+      initialRouteName = 'This Month'
+    >
+      <TopTab.Screen name="Last Month" component={LastMonth} />
+      <TopTab.Screen name="This Month" component={ThisMonth} />
+      <TopTab.Screen name="Next Month" component={NextMonth} />
+    </TopTab.Navigator>
   );
 }
 
 const RecentScreen = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="This Month" component={ThisMonth} />
-      <Tab.Screen name="Last Month" component={LastMonth} />
-      <Tab.Screen name="Next Month" component={NextMonth} />
-    </Tab.Navigator>
+    <TopTab.Navigator
+      initialRouteName = 'This Month'
+    >
+      <TopTab.Screen name="Last Month" component={LastMonth} />
+      <TopTab.Screen name="This Month" component={ThisMonth} />
+      <TopTab.Screen name="Next Month" component={NextMonth} />
+    </TopTab.Navigator>
   );
 }
 
 export default RecentScreen
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+  },
+  item: {
+    backgroundColor: '#23b4f7',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 24,
+    color: 'white',
+  },
+  content: {
+    fontSize: 16,
+    color: 'white',
+  },
+});
