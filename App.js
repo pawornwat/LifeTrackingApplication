@@ -13,6 +13,7 @@ import DashboardScreen from './screens/DashboardScreen';
 import LocationScreen from './screens/LocationScreen';
 import HistoryScreen from './screens/HistoryScreen';
 import AccountScreen from './screens/AccountScreen';
+import LoginScreen from './screens/LoginScreen';
 
 import { ThisMonth, LastMonth, NextMonth } from './screens/RecentScreen';
 
@@ -35,6 +36,11 @@ function AccountStack() {
         name="AccountHome"
         component={AccountScreen}
         options={{title: 'Account'}}
+      />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{title: 'Login'}}
       />
     </Stack.Navigator>
   );
@@ -67,6 +73,9 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <NavigationContainer>
+      <Stack.Screen>
+        <Stack.Screen name="Account" component={AccountStack}/>
+      </Stack.Screen>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
