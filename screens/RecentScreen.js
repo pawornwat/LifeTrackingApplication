@@ -1,9 +1,11 @@
-import React from 'react'
-import { SafeAreaView, View, Text, FlatList, StyleSheet, StatusBar, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import { SafeAreaView, View, Text, FlatList, StyleSheet, StatusBar, TouchableOpacity, Modal } from 'react-native'
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import RecordForm from './RecordForm';
 
 const TopTab = createMaterialTopTabNavigator();
 
@@ -82,6 +84,8 @@ function renderContent() {
     />
   );
 
+  const [modalOpen, setModalOpen] = useState(false);
+
   return(
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -89,12 +93,28 @@ function renderContent() {
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
+
+      <Modal visible={modalOpen} animationType='slide'>
+        <View style={styles.modalContent}>
+          <TouchableOpacity
+            onPress={ ()=> setModalOpen(false) }
+          >
+            {/* <Ionicons name='ios-close-sharp' size={30} color={'#f50d05'} style={{alignSelf:'flex-end', paddingRight:15, paddingVertical:15 , ...styles.modalToggle, ...styles.modalClose}}/> */}
+            <Ionicons name='ios-close-sharp' size={24} color={'#f50d05'} style={{ ...styles.modalToggle, ...styles.modalClose }}/>
+          </TouchableOpacity>
+          
+          {/* Render RecordForm */}
+          <RecordForm />
+        </View>
+      </Modal>
+
       <TouchableOpacity
-        // onPress={}
+        onPress={ ()=> setModalOpen(true) }
       >
-        <Ionicons name='ios-add-circle' size={60} color={'#23b4f7'} style={{alignSelf:'flex-end', paddingRight:25}}/>
+        {/* <Ionicons name='ios-add-circle' size={60} color={'#23b4f7'} style={{alignSelf:'flex-end', paddingRight:25, ...styles.modalToggle}}/> */}
+        <Ionicons name='ios-add-circle' size={60} color={'#23b4f7'} style={{ ...styles.modalToggle }}/>
       </TouchableOpacity>
-      <Text>Test</Text>
+      {/* <Text>Test</Text> */}
     </SafeAreaView>
   );
 }
@@ -143,5 +163,20 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 16,
     color: 'white',
+  },
+  modalToggle: {
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#f2f2f2',
+    padding: 10,
+    borderRadius: 10,
+    alignSelf: 'center',
+  },
+  modalClose: {
+    marginTop:20,
+    marginBottom:0,
+  },
+  modalContent: {
+    flex:1,
   },
 });
