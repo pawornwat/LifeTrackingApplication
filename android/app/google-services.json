@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "915301082507",
+    "project_id": "lifetrackingapplication",
+    "storage_bucket": "lifetrackingapplication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915301082507:android:90f3678ed5a1d2275efb8e",
+        "android_client_info": {
+          "package_name": "com.lifetrackingapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915301082507-7pmj8ueipdu9633baihv91jvctt7ps35.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3IGBqDTegU9Nf4bmRhCq16VOBA1WHtnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915301082507-7pmj8ueipdu9633baihv91jvctt7ps35.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

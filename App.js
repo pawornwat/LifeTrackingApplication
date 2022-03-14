@@ -10,10 +10,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import RecentScreen from './screens/RecentScreen';
 import DashboardScreen from './screens/DashboardScreen';
+import RecordForm from './screens/RecordForm';
 import LocationScreen from './screens/LocationScreen';
-import HistoryScreen from './screens/HistoryScreen';
 import AccountScreen from './screens/AccountScreen';
 import LoginScreen from './screens/LoginScreen';
+import OpenModal from './screens/OpenModal';
 
 import { ThisMonth, LastMonth, NextMonth } from './screens/RecentScreen';
 
@@ -35,12 +36,39 @@ function AccountStack() {
       <Stack.Screen
         name="AccountHome"
         component={AccountScreen}
-        options={{title: 'Account'}}
+        // options={{title: 'Account'}}
       />
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{title: 'Login'}}
+        // options={{title: 'Login'}}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function HomeStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Recent"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#0096DA',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <Stack.Screen
+        name="RecentScreen"
+        component={RecentScreen}
+        // options={{title: 'RecentScreen'}}
+      />
+      <Stack.Screen
+        name="RecordForm"
+        component={RecordForm}
+        // options={{title: 'RecordForm'}}
       />
     </Stack.Navigator>
   );
@@ -73,9 +101,11 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Screen>
+      {/* <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeStack}/>
+        <Stack.Screen name="Dashboard" component={DashboardStack}/>
         <Stack.Screen name="Account" component={AccountStack}/>
-      </Stack.Screen>
+      </Stack.Navigator> */}
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
@@ -84,22 +114,29 @@ export default function App() {
               iconName = focused
                 ? 'ios-list'
                 : 'ios-list-outline';
+                // ? 'ios-home'
+                // : 'ios-home-outline';
+              size = focused ? size + 7 : size + 5;
             } else if (route.name === 'Dashboard') {
               iconName = focused 
                 ? 'ios-pie-chart' 
                 : 'ios-pie-chart-outline';
+              size = focused ? size + 7 : size + 5;
+              } else if (route.name === 'Add') {
+                iconName = focused 
+                  ? 'ios-add-circle-outline' 
+                  : 'ios-add-circle';
+                size = focused ? size + 7 : size + 5;
             } else if (route.name === 'Location') {
               iconName = focused 
                 ? 'ios-location' 
                 : 'ios-location-outline';
-            } else if (route.name === 'History') {
-              iconName = focused 
-                ? 'ios-time' 
-                : 'ios-time-outline';
+              size = focused ? size + 7 : size + 5;
             } else if (route.name === 'Account') {
               iconName = focused 
                 ? 'ios-person-circle' 
                 : 'ios-person-circle-outline';
+              size = focused ? size + 7 : size + 5;
             }
             
             // You can return any component that you like here!
@@ -107,15 +144,15 @@ export default function App() {
           },
         })}
         tabBarOptions={{
-          activeTintColor: 'tomato',
+          activeTintColor: 'red',
           inactiveTintColor: 'gray',
+          showLabel: true,
         }}
       >
-
         <Tab.Screen name="Recent" component={RecentScreen} />
         <Tab.Screen name="Dashboard" component={DashboardScreen} />
+        <Tab.Screen name="Add" component={RecordForm}/>
         <Tab.Screen name="Location" component={LocationScreen} />
-        <Tab.Screen name="History" component={HistoryScreen} />
         <Tab.Screen name="Account" component={AccountStack} />
       </Tab.Navigator>
     </NavigationContainer>

@@ -1,129 +1,223 @@
-import React, { useState } from 'react'
-import { SafeAreaView, View, Text, FlatList, StyleSheet, StatusBar, TouchableOpacity, Modal } from 'react-native'
+import React, {useEffect, useState} from 'react';
+import { SafeAreaView, View, Text, FlatList, StyleSheet, StatusBar, TouchableOpacity, Modal, ScrollView, ActivityIndicator } from 'react-native';
+import { ListItem, Left, Body, Right } from 'native-base';
 
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
+import firestore from '@react-native-firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import RecordForm from './RecordForm';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import OpenModal from './OpenModal';
 
 const TopTab = createMaterialTopTabNavigator();
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    day: 'Monday',
-    date: '10',
-    month: 'March',
-    year: '2022',
-    cost: '150$',
-    iconType: 'ios-car-sport',
-    destination: 'Home',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    day: 'Tuesday',
-    date: '11',
-    month: 'March',
-    year: '2022',
-    cost: '120$',
-    iconType: 'ios-bus',
-    destination: 'Central',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    day: 'Friday',
-    date: '14',
-    month: 'March',
-    year: '2022',
-    cost: '180$',
-    iconType: 'ios-car',
-    destination: 'Secon',
-  },
-];
-
-function ThisMonth() {
+const ThisMonth = () => {
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  let date = new Date();
+  const monthNow = months[date.getMonth()]
+  // const monthNow = currentMonth[0];
   return (
-    renderContent()
-  );
+      renderContent(monthNow)
+    );
 }
 
+// function ThisMonth() {
+//   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+//   let date = new Date();
+//   const monthNow = months[date.getMonth()]
+//   return (
+//       renderContent(monthNow)
+//     );
+// }
+
 function LastMonth() {
-  return (
-    renderContent()
-  );
+  return renderContent();
 }
 
 function NextMonth() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>No List!</Text>
     </View>
   );
 }
 
-export { ThisMonth, LastMonth, NextMonth };
+export {ThisMonth, LastMonth, NextMonth};
 
-const Item = ({ day, date, month, year, iconType, destination, cost }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{day}</Text>
-    <Text style={styles.content}>{date} {month} {year}</Text>
-    <Text style={styles.content}><Ionicons name={iconType} size={32} /> {destination} {cost}</Text>
-  </View>
-);
+// useEffect(() => {
+//   const subscriber = firestore()
+//     .collection('users')
+//     .orderBy('transDate', 'desc')
+//     .get()
+//     .then(querySnapshot  => {
+//       const records = [];
 
-function renderContent() {
-  const renderItem = ({ item }) => (
-    <Item day={item.day} 
-          date={item.date}
-          month={item.month}
-          year={item.year}
-          iconType={item.iconType}
-          destination={item.destination}
-          cost={item.cost}
-    />
-  );
+//       querySnapshot.forEach(documentSnapshot => {
+//         records.push({
+//           ...documentSnapshot.data(),
+//           key: documentSnapshot.id,
+//         });
+//       });
 
-  const [modalOpen, setModalOpen] = useState(false);
+//     setRecords(records);
+//     setLoading(false);
 
-  return(
+//     });
+
+//   return () => subscriber();
+// }, []);
+
+const readData = monthNow => {
+  const [loading, setLoading] = useState(true);
+  const [records, setRecords] = useState([]);
+
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection("users")
+      .where("transMonth", "==", 'March')
+      // .orderBy('transDate', 'desc')
+      .onSnapshot(querySnapshot  => {
+        const records = [];
+
+        querySnapshot.forEach(documentSnapshot => {
+          records.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+  
+      setRecords(records);
+      setLoading(false);
+      // console.log(`${monthNow} fetch data successfully`) //${JSON.stringify(monthNow)}
+      });
+    return () => subscriber();
+  }, []);
+
+  if (loading) {
+    return <ActivityIndicator />;
+  }
+  return records;
+}
+
+// useEffect( async ()=>{
+//   await readData();
+// });
+
+const renderContent = monthNow => {
+
+  // const iconType = [
+  //   {
+  //     key1: 'ios-car-sport',
+  //     key2: 'ios-bus',
+  //     key3: 'ios-car'
+  //   }
+  // ];
+
+  // const Item = ({ transCost, transDate, transNote, transType }) => (
+  //   <View style={styles.item}>
+  //     <View style={{flexDirection:'row'}}>
+  //       <View style={{flexDirection:"column"}}>
+  //         <Text style={styles.date}> {transDate} </Text>
+  //       </View>
+  //       <Text style={styles.cost}> {transCost} $ </Text>
+  //     </View>
+  //     <View style={{flexDirection:'row', marginTop:10}}>
+  //       <Ionicons name={transType} size={32} style={styles.icon}/>
+  //       <Text style={styles.content}> {transNote} </Text>
+  //     </View>
+  //   </View>
+  // );
+
+  // const renderItem = ({ item }) => (
+  //   <Item
+  //         id={item.id}
+  //         transCost={item.transCost}
+  //         transDate={item.transDate}
+  //         transNote={item.transNote}
+  //         transType={item.transType}
+  //   />
+  // );
+
+  // function renderModal() {
+  //   const [modalOpen, setModalOpen] = useState(false);
+  //   return (
+  //     <SafeAreaView>
+  //       <Modal visible={modalOpen} animationType="slide">
+  //         <View style={styles.modalContent}>
+  //           <TouchableOpacity onPress={() => setModalOpen(false)}>
+  //             <Ionicons name="ios-close-sharp" size={24} color={'#f50d05'} style={{...styles.modalToggle, ...styles.modalClose}} />
+  //           </TouchableOpacity>
+
+  //           {/* Render RecordForm */}
+  //           <RecordForm />
+  //           {/* Render RecordForm */}
+
+  //         </View>
+  //       </Modal>
+  //       <TouchableOpacity onPress={() => setModalOpen(true)}>
+  //         <Ionicons name="ios-add-circle" size={60} color={'#23b4f7'} style={{...styles.modalToggle}} />
+  //       </TouchableOpacity>
+  //     </SafeAreaView>
+  //   );
+  // }
+
+  // const [modalOpen, setModalOpen] = useState(false);
+
+  // const arrRecords = Object.values(readData());
+
+  return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={DATA}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
+        data={readData(monthNow)}
+        renderItem={({item}) => ( 
+
+            <ScrollView>
+                <ListItem style={styles.itemHeader}>
+                  <Left>
+                    <Text style={styles.dateTitle}> {item.transDate} </Text>
+                  </Left>
+                  <Right>
+                      <Text style={styles.date}> {item.transDay} </Text>
+                  </Right>
+                </ListItem>
+                <ListItem style={styles.item}>
+                    <Left>
+                      <Ionicons name={item.transType} size={32} style={styles.icon} />
+                      <Text style={styles.content}> {item.transNote} </Text>
+                    </Left>
+                    <Right>
+                      <Text style={styles.cost}> {item.transCost} ฿</Text>
+                    </Right>
+                </ListItem>
+              
+            </ScrollView>
+            
+            // <View style={styles.item}>
+            //   <View style={{flexDirection: 'row'}}>
+            //     <View style={{flexDirection: 'column'}}>
+            //       <Text style={styles.dateTitle}> {item.transDay} </Text>
+            //       <Text style={styles.date}> {item.transDate} </Text>
+            //     </View>
+            //     <Text style={styles.cost}> {item.transCost} ฿</Text>
+            //   </View>
+            //   <View style={{flexDirection: 'row', marginTop: 10}}>
+            //     <Ionicons name={item.transType} size={32} style={styles.icon} />
+            //     <Text style={styles.content}> {item.transNote} </Text>
+            //   </View>
+            // </View>
+        )}
       />
 
-      <Modal visible={modalOpen} animationType='slide'>
-        <View style={styles.modalContent}>
-          <TouchableOpacity
-            onPress={ ()=> setModalOpen(false) }
-          >
-            {/* <Ionicons name='ios-close-sharp' size={30} color={'#f50d05'} style={{alignSelf:'flex-end', paddingRight:15, paddingVertical:15 , ...styles.modalToggle, ...styles.modalClose}}/> */}
-            <Ionicons name='ios-close-sharp' size={24} color={'#f50d05'} style={{ ...styles.modalToggle, ...styles.modalClose }}/>
-          </TouchableOpacity>
-          
-          {/* Render RecordForm */}
-          <RecordForm />
-        </View>
-      </Modal>
+    {/* {renderModal()} */}
 
-      <TouchableOpacity
-        onPress={ ()=> setModalOpen(true) }
-      >
-        {/* <Ionicons name='ios-add-circle' size={60} color={'#23b4f7'} style={{alignSelf:'flex-end', paddingRight:25, ...styles.modalToggle}}/> */}
-        <Ionicons name='ios-add-circle' size={60} color={'#23b4f7'} style={{ ...styles.modalToggle }}/>
-      </TouchableOpacity>
-      {/* <Text>Test</Text> */}
+    <OpenModal />
+
     </SafeAreaView>
   );
 }
 
 function RecentTabs() {
   return (
-    <TopTab.Navigator
-      initialRouteName = 'This Month'
-    >
+    <TopTab.Navigator initialRouteName="This Month">
       <TopTab.Screen name="Last Month" component={LastMonth} />
       <TopTab.Screen name="This Month" component={ThisMonth} />
       <TopTab.Screen name="Next Month" component={NextMonth} />
@@ -133,36 +227,60 @@ function RecentTabs() {
 
 const RecentScreen = () => {
   return (
-    <TopTab.Navigator
-      initialRouteName = 'This Month'
-    >
+    <TopTab.Navigator initialRouteName="This Month">
       <TopTab.Screen name="Last Month" component={LastMonth} />
       <TopTab.Screen name="This Month" component={ThisMonth} />
       <TopTab.Screen name="Next Month" component={NextMonth} />
     </TopTab.Navigator>
   );
-}
+};
 
-export default RecentScreen
+export default RecentScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
   },
+  itemHeader: {
+    backgroundColor: '#23b4f7',
+    padding: 10,
+    marginVertical: 1,
+    marginHorizontal: 16,
+  },
   item: {
     backgroundColor: '#23b4f7',
-    padding: 20,
-    marginVertical: 8,
+    padding: 10,
+    marginVertical: 1,
     marginHorizontal: 16,
+    marginBottom: 15,
   },
   title: {
     fontSize: 24,
     color: 'white',
   },
   content: {
+    fontSize: 18,
+    color: 'white',
+    alignSelf: 'center',
+    // marginHorizontal: 30,
+    marginLeft: 30,
+  },
+  dateTitle: {
     fontSize: 16,
     color: 'white',
+  },
+  date: {
+    fontSize: 14,
+    color: 'white',
+  },
+  cost: {
+    fontSize: 18,
+    color: 'white',
+  },
+  icon: {
+    color: 'white',
+    marginLeft: 10,
   },
   modalToggle: {
     marginBottom: 10,
@@ -173,10 +291,73 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   modalClose: {
-    marginTop:20,
-    marginBottom:0,
+    marginTop: 20,
+    marginBottom: 0,
   },
   modalContent: {
-    flex:1,
+    flex: 1,
   },
 });
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     marginTop: StatusBar.currentHeight || 0,
+//   },
+//   itemHeader: {
+//     backgroundColor: '#23b4f7',
+//     padding: 10,
+//     marginVertical: 1,
+//     marginHorizontal: 16,
+//   },
+//   item: {
+//     backgroundColor: '#23b4f7',
+//     padding: 10,
+//     marginVertical: 1,
+//     marginHorizontal: 16,
+//     marginBottom: 15,
+//   },
+//   title: {
+//     fontSize: 24,
+//     color: 'white',
+//   },
+//   content: {
+//     fontSize: 18,
+//     color: 'white',
+//     marginLeft: 30,
+//   },
+//   dateTitle: {
+//     fontSize: 18,
+//     color: 'white',
+//   },
+//   date: {
+//     fontSize: 14,
+//     color: 'white',
+//   },
+//   cost: {
+//     fontSize: 22,
+//     color: 'white',
+//     marginLeft: 150,
+//     marginRight: 20,
+//     alignSelf: 'center',
+//   },
+//   icon: {
+//     color: 'white',
+//     marginLeft: 15,
+//   },
+//   modalToggle: {
+//     marginBottom: 10,
+//     borderWidth: 1,
+//     borderColor: '#f2f2f2',
+//     padding: 10,
+//     borderRadius: 10,
+//     alignSelf: 'center',
+//   },
+//   modalClose: {
+//     marginTop: 20,
+//     marginBottom: 0,
+//   },
+//   modalContent: {
+//     flex: 1,
+//   },
+// });
