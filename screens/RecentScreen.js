@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import { SafeAreaView, View, Text, FlatList, StyleSheet, StatusBar, TouchableOpacity, Modal, ScrollView, ActivityIndicator } from 'react-native';
-import { ListItem, Left, Body, Right } from 'native-base';
+import { SafeAreaView, View, Text, FlatList, StyleSheet, StatusBar, Modal, ScrollView, ActivityIndicator, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { Left, Body, Right, Row } from 'native-base';
+import { ListItem } from 'react-native-elements';
 
 import firestore from '@react-native-firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RecordForm from './RecordForm';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import OpenModal from './OpenModal';
+import DetailScreen from './DetailScreen';
 
 const TopTab = createMaterialTopTabNavigator();
+import { useNavigation } from '@react-navigation/native';
 
 const ThisMonth = () => {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -43,29 +46,6 @@ function NextMonth() {
 
 export {ThisMonth, LastMonth, NextMonth};
 
-// useEffect(() => {
-//   const subscriber = firestore()
-//     .collection('users')
-//     .orderBy('transDate', 'desc')
-//     .get()
-//     .then(querySnapshot  => {
-//       const records = [];
-
-//       querySnapshot.forEach(documentSnapshot => {
-//         records.push({
-//           ...documentSnapshot.data(),
-//           key: documentSnapshot.id,
-//         });
-//       });
-
-//     setRecords(records);
-//     setLoading(false);
-
-//     });
-
-//   return () => subscriber();
-// }, []);
-
 const readData = monthNow => {
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState([]);
@@ -98,44 +78,45 @@ const readData = monthNow => {
   return records;
 }
 
-// useEffect( async ()=>{
-//   await readData();
-// });
+const renderContent = () => {
 
-const renderContent = monthNow => {
+  const navigation = useNavigation();
 
-  // const iconType = [
-  //   {
-  //     key1: 'ios-car-sport',
-  //     key2: 'ios-bus',
-  //     key3: 'ios-car'
-  //   }
-  // ];
-
-  // const Item = ({ transCost, transDate, transNote, transType }) => (
-  //   <View style={styles.item}>
-  //     <View style={{flexDirection:'row'}}>
-  //       <View style={{flexDirection:"column"}}>
-  //         <Text style={styles.date}> {transDate} </Text>
-  //       </View>
-  //       <Text style={styles.cost}> {transCost} $ </Text>
-  //     </View>
-  //     <View style={{flexDirection:'row', marginTop:10}}>
-  //       <Ionicons name={transType} size={32} style={styles.icon}/>
-  //       <Text style={styles.content}> {transNote} </Text>
-  //     </View>
-  //   </View>
-  // );
-
-  // const renderItem = ({ item }) => (
-  //   <Item
-  //         id={item.id}
-  //         transCost={item.transCost}
-  //         transDate={item.transDate}
-  //         transNote={item.transNote}
-  //         transType={item.transType}
-  //   />
-  // );
+  const renderItem = ({item, index}) => {
+    return (
+      <ScrollView>
+          <TouchableOpacity 
+            onLongPress={() => {
+              navigation.navigate('Location');
+              console.log('Long Press')
+            }}
+            delayLongPress={800}
+          >
+            <ListItem.Content style={styles.itemHeader}>
+              <View style={{flexDirection:'row'}}>
+                <Left>
+                  <Text style={styles.dateTitle}> {item.transDate} </Text>
+                </Left>
+                <Right>
+                  <Text style={styles.date}> {item.transDay} </Text>
+                </Right>
+              </View>
+            </ListItem.Content>
+            <ListItem.Content style={styles.item}>
+              <View style={{flexDirection:'row'}}>
+                <Left>
+                  <Ionicons name={item.transType} size={32} style={styles.icon}></Ionicons>
+                  <Text style={styles.content}> {item.transNote} </Text>
+                </Left>
+                <Right>
+                  <Text style={styles.cost}> {item.transCost} ฿</Text>
+                </Right>
+              </View>
+            </ListItem.Content>
+          </TouchableOpacity>
+      </ScrollView>
+    )
+  }
 
   // function renderModal() {
   //   const [modalOpen, setModalOpen] = useState(false);
@@ -167,49 +148,15 @@ const renderContent = monthNow => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={readData(monthNow)}
-        renderItem={({item}) => ( 
-
-            <ScrollView>
-                <ListItem style={styles.itemHeader}>
-                  <Left>
-                    <Text style={styles.dateTitle}> {item.transDate} </Text>
-                  </Left>
-                  <Right>
-                      <Text style={styles.date}> {item.transDay} </Text>
-                  </Right>
-                </ListItem>
-                <ListItem style={styles.item}>
-                    <Left>
-                      <Ionicons name={item.transType} size={32} style={styles.icon} />
-                      <Text style={styles.content}> {item.transNote} </Text>
-                    </Left>
-                    <Right>
-                      <Text style={styles.cost}> {item.transCost} ฿</Text>
-                    </Right>
-                </ListItem>
-              
-            </ScrollView>
-            
-            // <View style={styles.item}>
-            //   <View style={{flexDirection: 'row'}}>
-            //     <View style={{flexDirection: 'column'}}>
-            //       <Text style={styles.dateTitle}> {item.transDay} </Text>
-            //       <Text style={styles.date}> {item.transDate} </Text>
-            //     </View>
-            //     <Text style={styles.cost}> {item.transCost} ฿</Text>
-            //   </View>
-            //   <View style={{flexDirection: 'row', marginTop: 10}}>
-            //     <Ionicons name={item.transType} size={32} style={styles.icon} />
-            //     <Text style={styles.content}> {item.transNote} </Text>
-            //   </View>
-            // </View>
-        )}
+        data={readData()}
+        keyExtractor={(item) => item.key}
+        renderItem={renderItem}
+        // onPress={() => { navigation.navigate('Detail'); }}
       />
 
     {/* {renderModal()} */}
 
-    <OpenModal />
+    {/* <OpenModal /> */}
 
     </SafeAreaView>
   );
@@ -240,47 +187,52 @@ export default RecentScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    backgroundColor: '#d7dbdb',
+    // marginTop: 10,
+    // marginTop: StatusBar.currentHeight || 0,
+    
   },
   itemHeader: {
-    backgroundColor: '#23b4f7',
+    backgroundColor: '#f7fafa',
     padding: 10,
     marginVertical: 1,
+    marginTop: 10,
     marginHorizontal: 16,
   },
   item: {
-    backgroundColor: '#23b4f7',
+    backgroundColor: '#e9f2f1',
     padding: 10,
     marginVertical: 1,
     marginHorizontal: 16,
-    marginBottom: 15,
+    marginBottom: 10,
   },
   title: {
     fontSize: 24,
-    color: 'white',
+    color: 'grey',
+  },
+  icon: {
+    color: 'grey',
+    marginLeft: 10,
   },
   content: {
     fontSize: 18,
-    color: 'white',
-    alignSelf: 'center',
-    // marginHorizontal: 30,
-    marginLeft: 30,
+    color: 'grey',
+    // alignSelf:'center',
+    // marginLeft: 50,
   },
   dateTitle: {
     fontSize: 16,
-    color: 'white',
+    color: 'grey',
+    fontWeight: 'bold',
   },
   date: {
     fontSize: 14,
-    color: 'white',
+    color: 'grey',
+    alignSelf:'flex-end',
   },
   cost: {
     fontSize: 18,
-    color: 'white',
-  },
-  icon: {
-    color: 'white',
-    marginLeft: 10,
+    color: 'grey',
   },
   modalToggle: {
     marginBottom: 10,

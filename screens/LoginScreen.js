@@ -5,8 +5,6 @@ import { Container, Header, Left, Body, Button, Icon, Title, Content, Form, Item
 
 import pic from './pic';
 
-
-
 const LoginScreen = ({ navigation }) => {
   //const uri = "https://drive.google.com/drive/u/1/folders/1JUopWeg_Z2bY5Dum6fYhpgKT8W_ZRsd4";
   return (

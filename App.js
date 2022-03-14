@@ -15,6 +15,14 @@ import LocationScreen from './screens/LocationScreen';
 import AccountScreen from './screens/AccountScreen';
 import LoginScreen from './screens/LoginScreen';
 import OpenModal from './screens/OpenModal';
+import DetailScreen from './screens/DetailScreen';
+import Touch from './screens/Touch';
+
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  "[react-native-gesture-handler] Seems like you\'re using an old API with gesture components, check out new Gestures system!",
+]);
 
 import { ThisMonth, LastMonth, NextMonth } from './screens/RecentScreen';
 
@@ -52,22 +60,21 @@ function HomeStack() {
     <Stack.Navigator
       initialRouteName="Recent"
       screenOptions={{
-        headerStyle: {
-          backgroundColor: '#0096DA',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}>
+        headerShown: false,
+    }}>
       <Stack.Screen
-        name="RecentScreen"
+        name="Recent_St"
         component={RecentScreen}
         // options={{title: 'RecentScreen'}}
       />
       <Stack.Screen
         name="RecordForm"
         component={RecordForm}
+        // options={{title: 'RecordForm'}}
+      />
+      <Stack.Screen
+        name="Detail"
+        component={DetailScreen}
         // options={{title: 'RecordForm'}}
       />
     </Stack.Navigator>
@@ -149,11 +156,11 @@ export default function App() {
           showLabel: true,
         }}
       >
-        <Tab.Screen name="Recent" component={RecentScreen} />
+        <Tab.Screen name="Recent" component={HomeStack} />
         <Tab.Screen name="Dashboard" component={DashboardScreen} />
         <Tab.Screen name="Add" component={RecordForm}/>
         <Tab.Screen name="Location" component={LocationScreen} />
-        <Tab.Screen name="Account" component={AccountStack} />
+        <Tab.Screen name="Account" component={AccountScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

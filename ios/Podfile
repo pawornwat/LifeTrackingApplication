@@ -14,6 +14,8 @@ target 'LifeTrackingApplication' do
 
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'LifeTrackingApplicationTests' do
     inherit! :complete
     # Pods for testing

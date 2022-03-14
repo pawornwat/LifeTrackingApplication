@@ -3,7 +3,6 @@ import { View, TextInput, StyleSheet } from 'react-native';
 import { Container, Header, Content, Item, Input, Label, Icon, Form, Button, Text, Picker } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// import { Picker as SelectPicker } from '@react-native-picker/picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 
@@ -11,11 +10,10 @@ import firestore, { firebase } from '@react-native-firebase/firestore';
 
 export default function RecordFrom( { navigation } ) {
 
-  // const [currentID, setCurrentID] = useState();
-  // const [totalID, setTotalID] = useState(10);
   const [transDateIn, setTransDateIn] = useState();
   const [transMonthIn, setTransMonthIn] = useState();
   const [transDayIn, setTransDayIn] = useState();
+  const [transEstTimeIn, setTransEstTimeIn] = useState();
   const [transCostIn, setTransCostIn] = useState();
   const [transTypeIn, setTransTypeIn] = useState();
   const [transNoteIn, setTransNoteIn] = useState();
@@ -39,16 +37,7 @@ export default function RecordFrom( { navigation } ) {
   };
   // ----------------------- //
 
-  // const getCurrentID = async () => {
-  //   const usersId = await firestore().collection('record_id').get();  
-  //   setCurrentID(usersId);
-  // }
-
   const setData = async () => {
-    // const increment = firebase.firestore.FieldValue.increment(1);
-    // await firestore().collection('users').update({
-    //   id: increment, // increment age by 1
-    // });
 
     firestore()
       .collection('users')
@@ -57,6 +46,7 @@ export default function RecordFrom( { navigation } ) {
         transDate: transDateIn,
         transMonth: transMonthIn,
         transDay: transDayIn,
+        transEstTime: transEstTimeIn,
         transNote: transNoteIn,
         transType: transTypeIn,
         
@@ -68,25 +58,6 @@ export default function RecordFrom( { navigation } ) {
       });
   }
 
-  // const setID = () => {
-  //   getCurrentID()
-  //   var s = JSON.stringify(currentID);
-  //   var d = JSON.parse(s);
-  //   var t = Math.max(d)
-  //   firestore()
-  //     .collection('record_id')
-  //     .add({
-  //       r_id: t,
-  //     })
-  //     .then(() => {
-  //       console.log('ID added! ' + d);
-  //     });
-  // }
-
-  // useEffect( async () => {
-  //   await setData();
-  // });
-
   return (
     <View style={styles.container}>
       <View style={styles.item}>
@@ -94,38 +65,25 @@ export default function RecordFrom( { navigation } ) {
             <Ionicons name='ios-cash-outline' style={styles.icon} />
             <TextInput
               style={styles.input}
-              placeholder=" $"
+              placeholder="How much it cost?"
               onChangeText={setTransCostIn}
               value={transCostIn}
+              keyboardType={'number-pad'}
             />
           </View>
-      </View>
+      </View>     
       <View style={styles.item}>
-        <Picker
-          mode="dropdown"
-          placeholder="Select One"
-          placeholderStyle={{ color: "#2874F0" }}
-          note={false}
-          selectedValue={transTypeIn}
-          onValueChange={(itemValue, itemIndex) => 
-            setTransTypeIn(itemValue)}
-        >
-          <Picker.Item label="Personal Car" value="ios-car-sport" />
-          <Picker.Item label="Taxi" value="ios-car" />
-          <Picker.Item label="Bus" value="ios-bus" />
-        </Picker>
-      </View>
-      {/* <View style={styles.item}>
         <View style={styles.iconRow}>
-          <Ionicons ios='ios-car-outline' android='car-outline' style={styles.icon} />
+          <Ionicons name='ios-time-outline' style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="How do you go?"
-            onChangeText={setTransTypeIn}
-            value={transTypeIn}
+            placeholder="How long it take?"
+            onChangeText={setTransEstTimeIn}
+            value={transEstTimeIn}
+            keyboardType={'number-pad'}
           />
         </View>
-      </View> */}
+      </View>
       <View style={styles.item}>
         <View style={styles.iconRow}>
           <Ionicons name='ios-book-outline' style={styles.icon} />
@@ -135,6 +93,24 @@ export default function RecordFrom( { navigation } ) {
             onChangeText={setTransNoteIn}
             value={transNoteIn}
           />
+        </View>
+      </View>
+      <View style={styles.item}>
+        <View style={styles.iconRow}>
+          <Ionicons name='ios-car-outline' style={styles.icon} />
+          <Picker
+            mode="dropdown"
+            placeholder="Select One"
+            placeholderStyle={{ color: "#2874F0" }}
+            note={false}
+            selectedValue={transTypeIn}
+            onValueChange={(itemValue, itemIndex) => 
+              setTransTypeIn(itemValue)}
+          >
+            <Picker.Item label="   Personal Car" value="ios-car-sport" />
+            <Picker.Item label="   Taxi" value="ios-car" />
+            <Picker.Item label="   Bus" value="ios-bus" />
+          </Picker>
         </View>
       </View>
       <View style={styles.item}>
@@ -285,6 +261,11 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'column',
     //flex: 1,
+    marginTop: 10,
+  },
+  itemPicker: {
+    flexDirection: 'row',
+    marginLeft: 10,
     marginTop: 10,
   },
   icon: {
