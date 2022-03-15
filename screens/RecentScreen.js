@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import { SafeAreaView, View, Text, FlatList, StyleSheet, StatusBar, Modal, ScrollView, ActivityIndicator, TouchableOpacity, TouchableHighlight } from 'react-native';
-import { Left, Body, Right, Row } from 'native-base';
+import { SafeAreaView, View, Text, FlatList, StyleSheet, StatusBar, Modal, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Left, Right, Body } from 'native-base';
 import { ListItem } from 'react-native-elements';
 
 import firestore from '@react-native-firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import RecordForm from './RecordForm';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import OpenModal from './OpenModal';
-import DetailScreen from './DetailScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 import { useNavigation } from '@react-navigation/native';
@@ -87,8 +85,17 @@ const renderContent = () => {
       <ScrollView>
           <TouchableOpacity 
             onLongPress={() => {
-              navigation.navigate('Location');
-              console.log('Long Press')
+              navigation.navigate('Detail', {
+                key: item.key,
+                transCost: item.transCost,
+                transDate: item.transDate,
+                transMonth: item.transMonth,
+                transDay: item.transDay,
+                transEstTime: item.transEstTime,
+                transNote: item.transNote,
+                transType: item.transType,                
+              });
+              // console.log('Long Press', item.key)
             }}
             delayLongPress={800}
           >
@@ -105,9 +112,11 @@ const renderContent = () => {
             <ListItem.Content style={styles.item}>
               <View style={{flexDirection:'row'}}>
                 <Left>
-                  <Ionicons name={item.transType} size={32} style={styles.icon}></Ionicons>
-                  <Text style={styles.content}> {item.transNote} </Text>
+                  <Ionicons name={item.transType} size={32} style={styles.icon}></Ionicons>                   
                 </Left>
+                <Body>
+                  <Text style={styles.content}> {item.transNote} </Text>
+                </Body>
                 <Right>
                   <Text style={styles.cost}> {item.transCost} ฿</Text>
                 </Right>
@@ -151,7 +160,6 @@ const renderContent = () => {
         data={readData()}
         keyExtractor={(item) => item.key}
         renderItem={renderItem}
-        // onPress={() => { navigation.navigate('Detail'); }}
       />
 
     {/* {renderModal()} */}
@@ -215,10 +223,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   content: {
+    width: 230,
     fontSize: 18,
     color: 'grey',
-    // alignSelf:'center',
-    // marginLeft: 50,
+    alignSelf: 'auto',
+    textAlign: 'auto',
+    // borderWidth: 1,
+    marginTop: 5,
+    // padding: 10,
   },
   dateTitle: {
     fontSize: 16,

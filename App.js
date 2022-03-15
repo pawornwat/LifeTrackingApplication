@@ -18,6 +18,8 @@ import OpenModal from './screens/OpenModal';
 import DetailScreen from './screens/DetailScreen';
 import Touch from './screens/Touch';
 
+import Tabs from './navigations/Tabs';
+
 import { LogBox } from 'react-native';
 
 LogBox.ignoreLogs([
@@ -25,71 +27,75 @@ LogBox.ignoreLogs([
 ]);
 
 import { ThisMonth, LastMonth, NextMonth } from './screens/RecentScreen';
+import SignIn from './screens/SignIn';
 
 const Stack = createStackNavigator();
 
-function AccountStack() {
-  return (
-    <Stack.Navigator
-      initialRouteName="AccountHome"
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#0096DA',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}>
-      <Stack.Screen
-        name="AccountHome"
-        component={AccountScreen}
-        // options={{title: 'Account'}}
-      />
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        // options={{title: 'Login'}}
-      />
-    </Stack.Navigator>
-  );
-}
+// function AccountStack() {
+//   return (
+//     <Stack.Navigator
+//       initialRouteName="AccountHome"
+//       screenOptions={{
+//         headerStyle: {
+//           backgroundColor: '#0096DA',
+//         },
+//         headerTintColor: '#fff',
+//         headerTitleStyle: {
+//           fontWeight: 'bold',
+//         },
+//       }}>
+//       <Stack.Screen
+//         name="AccountHome"
+//         component={AccountScreen}
+//         // options={{title: 'Account'}}
+//       />
+//       <Stack.Screen
+//         name="Login"
+//         component={LoginScreen}
+//         // options={{title: 'Login'}}
+//       />
+//     </Stack.Navigator>
+//   );
+// }
 
-function HomeStack() {
-  return (
-    <Stack.Navigator
-      initialRouteName="Recent"
-      screenOptions={{
-        headerShown: false,
-    }}>
-      <Stack.Screen
-        name="Recent_St"
-        component={RecentScreen}
-        // options={{title: 'RecentScreen'}}
-      />
-      <Stack.Screen
-        name="RecordForm"
-        component={RecordForm}
-        // options={{title: 'RecordForm'}}
-      />
-      <Stack.Screen
-        name="Detail"
-        component={DetailScreen}
-        // options={{title: 'RecordForm'}}
-      />
-    </Stack.Navigator>
-  );
-}
+// function HomeStack() {
+//   return (
+//     <Stack.Navigator
+//       initialRouteName="Home"
+//       screenOptions={{
+//         headerShown: false,
+//     }}>
+//       <Stack.Screen
+//         name="Recent_St"
+//         component={RecentScreen}
+//         // options={{title: 'RecentScreen'}}
+//       />
+//       <Stack.Screen
+//         name="RecordForm"
+//         component={RecordForm}
+//         // options={{title: 'RecordForm'}}
+//       />
+//       <Stack.Screen
+//         name="Detail"
+//         component={DetailScreen}
+//       />
+//       {/* <Stack.Screen
+//         name="SignIn"
+//         component={SignIn}
+//       /> */}
+//     </Stack.Navigator>
+//   );
+// }
 
-function DashboardStack() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Dashboard!</Text>
-    </View>
-  );
-}
+// function DashboardStack() {
+//   return (
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//       <Text>Dashboard!</Text>
+//     </View>
+//   );
+// }
 
-const TopTab = createMaterialTopTabNavigator();
+// const TopTab = createMaterialTopTabNavigator();
 
 function RecentTabs() {
   return (
@@ -108,60 +114,21 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      {/* <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeStack}/>
-        <Stack.Screen name="Dashboard" component={DashboardStack}/>
-        <Stack.Screen name="Account" component={AccountStack}/>
-      </Stack.Navigator> */}
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-            if (route.name === 'Recent') {
-              iconName = focused
-                ? 'ios-list'
-                : 'ios-list-outline';
-                // ? 'ios-home'
-                // : 'ios-home-outline';
-              size = focused ? size + 7 : size + 5;
-            } else if (route.name === 'Dashboard') {
-              iconName = focused 
-                ? 'ios-pie-chart' 
-                : 'ios-pie-chart-outline';
-              size = focused ? size + 7 : size + 5;
-              } else if (route.name === 'Add') {
-                iconName = focused 
-                  ? 'ios-add-circle-outline' 
-                  : 'ios-add-circle';
-                size = focused ? size + 7 : size + 5;
-            } else if (route.name === 'Location') {
-              iconName = focused 
-                ? 'ios-location' 
-                : 'ios-location-outline';
-              size = focused ? size + 7 : size + 5;
-            } else if (route.name === 'Account') {
-              iconName = focused 
-                ? 'ios-person-circle' 
-                : 'ios-person-circle-outline';
-              size = focused ? size + 7 : size + 5;
-            }
-            
-            // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: 'red',
-          inactiveTintColor: 'gray',
-          showLabel: true,
-        }}
+      <Stack.Navigator
+          screenOptions={{
+            headerShown: false
+          }}
+        initialRouteName={"Home"}
       >
-        <Tab.Screen name="Recent" component={HomeStack} />
-        <Tab.Screen name="Dashboard" component={DashboardScreen} />
-        <Tab.Screen name="Add" component={RecordForm}/>
-        <Tab.Screen name="Location" component={LocationScreen} />
-        <Tab.Screen name="Account" component={AccountScreen} />
-      </Tab.Navigator>
+        <Stack.Screen name="Signin" component={SignIn} />
+        <Stack.Screen name="Main" component={Tabs} />
+        <Stack.Screen name="Recent" component={RecentScreen} />
+        <Stack.Screen name="RecordForm" component={RecordForm} />
+        <Stack.Screen name="Detail" component={DetailScreen} />
+        <Stack.Screen name="Dashboard" component={DashboardScreen} />
+        <Stack.Screen name="Location" component={LocationScreen} />
+        <Stack.Screen name="Account" component={AccountScreen} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

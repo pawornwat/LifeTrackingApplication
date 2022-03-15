@@ -6,7 +6,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 
-import firestore, { firebase } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
+import { Formik } from 'formik';
 
 export default function RecordFrom( { navigation } ) {
 
@@ -17,6 +18,7 @@ export default function RecordFrom( { navigation } ) {
   const [transCostIn, setTransCostIn] = useState();
   const [transTypeIn, setTransTypeIn] = useState();
   const [transNoteIn, setTransNoteIn] = useState();
+  const [isDisable, setIsDisable] = useState();
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -39,7 +41,7 @@ export default function RecordFrom( { navigation } ) {
 
   const setData = async () => {
 
-    firestore()
+    await firestore()
       .collection('users')
       .add({
         transCost: transCostIn,
@@ -54,9 +56,47 @@ export default function RecordFrom( { navigation } ) {
       .then(() => {
         console.log('Data added!');
         navigation.navigate('Recent');
-        // setID();
       });
   }
+
+  const clearText = () => {
+    setTimeout(()=>{
+      setTransMonthIn('')
+      setTransDayIn('')
+      setTransEstTimeIn('')
+      setTransCostIn('')
+      setTransTypeIn('')
+      setTransNoteIn('')
+    }, 1000)
+  }
+
+  // function IsEmpty() {
+  //   if (!transCostIn === "" && !transEstTimeIn === "" && !transCostIn === "" && !transEstTimeIn === "" && !transNoteIn === "" && !transTypeIn === "" && !transDateIn === ""){
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // }
+
+  // const buttonColor = () => {
+  //   return isEmpty = true ? styles.buttonDisable : styles.buttonAdd;
+  // }
+
+  // state = {
+  //   disabled: true
+  // }
+
+  // handleChange = (e) => {
+  //   if (e.target.value.length > 0) {
+  //     this.setState({
+  //       disabled: false
+  //     });
+  //   } else {
+  //     this.setState({
+  //       disabled: true
+  //     });
+  //   }
+  // }
 
   return (
     <View style={styles.container}>
@@ -127,7 +167,7 @@ export default function RecordFrom( { navigation } ) {
           onCancel={hideDatePicker}
         />
       </View>
-      <Button rounded success onPress={setData} style={styles.buttonAdd}>
+      <Button rounded disabled={false} success onPress={()=>{setData(), clearText()}} style={styles.buttonAdd}>
         <Text style={styles.content}>Add</Text>
       </Button>
     </View>
@@ -238,6 +278,16 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   buttonAdd: {
+    height: 40,
+    width: 250,
+    justifyContent:'center',
+    alignSelf:'center',
+    marginLeft: 15,
+    marginTop: 30,
+    marginBottom: 10,
+  },
+  buttonDisable: {
+    backgroundColor: 'grey',
     height: 40,
     width: 250,
     justifyContent:'center',
