@@ -17,6 +17,7 @@ export default function RecordFrom( { navigation } ) {
   const [transCostIn, setTransCostIn] = useState();
   const [transTypeIn, setTransTypeIn] = useState();
   const [transNoteIn, setTransNoteIn] = useState();
+  const [isDisable, setIsDisable] = useState();
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
