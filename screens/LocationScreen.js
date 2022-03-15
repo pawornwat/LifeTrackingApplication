@@ -18,8 +18,8 @@ const LocationScreen = () => {
             latitude: 13.8583,
             longitude: 100.4688,
           }}
-          title={'My marker title'}
-          description={'My marker description'}
+          title={'เคยมาที่นี่'}
+          description={'บันทึกความทรงจำดีๆ'}
         />
         <MapView.Marker
           coordinate={{

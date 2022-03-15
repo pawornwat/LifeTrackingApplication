@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
-import { Container, Header, Content, Item, Input, Label, Icon, Form, Button, Text, Picker } from 'native-base';
+import { View, TextInput, StyleSheet, Keyboard } from 'react-native';
+import { Button, Text, Picker } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 
-import firestore, { firebase } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 
 export default function RecordFrom( { navigation } ) {
 
@@ -39,9 +39,12 @@ export default function RecordFrom( { navigation } ) {
 
   const setData = async () => {
 
-    firestore()
+    let rndStr = (Math.random() + 1).toString(36).substring(7);
+
+    await firestore()
       .collection('users')
       .add({
+        _id: rndStr,
         transCost: transCostIn,
         transDate: transDateIn,
         transMonth: transMonthIn,
@@ -54,8 +57,23 @@ export default function RecordFrom( { navigation } ) {
       .then(() => {
         console.log('Data added!');
         navigation.navigate('Recent');
-        // setID();
       });
+  }
+
+  const clearText = () => {
+    setTimeout(()=>{
+      setTransDateIn('')
+      setTransMonthIn('')
+      setTransDayIn('')
+      setTransEstTimeIn('')
+      setTransCostIn('')
+      setTransTypeIn('')
+      setTransNoteIn('')
+    }, 1000)
+  }
+
+  function isEnableSignIn() {
+    return transCostIn != "" && transDateIn != "" && transMonthIn != "" && transDayIn != "" && transEstTimeIn != "" && transNoteIn != "" && transTypeIn != ""
   }
 
   return (
@@ -77,7 +95,7 @@ export default function RecordFrom( { navigation } ) {
           <Ionicons name='ios-time-outline' style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="How long it take?"
+            placeholder="How long it take? (Minute)"
             onChangeText={setTransEstTimeIn}
             value={transEstTimeIn}
             keyboardType={'number-pad'}
@@ -117,7 +135,7 @@ export default function RecordFrom( { navigation } ) {
         <View style={styles.iconRow}>
           <Ionicons name='ios-calendar-outline' style={styles.icon} />
           <Button transparent light onPress={showDatePicker} style={styles.button}>
-            { !transDateIn ? <Text>Select Date</Text> : <Text>{transDateIn}</Text> }
+            { !transDateIn ? <Text style={{color:'black'}}>Select Date</Text> : <Text style={{color:'black'}}>{transDateIn}</Text> }
           </Button>
         </View>
         <DateTimePickerModal
@@ -127,99 +145,12 @@ export default function RecordFrom( { navigation } ) {
           onCancel={hideDatePicker}
         />
       </View>
-      <Button rounded success onPress={setData} style={styles.buttonAdd}>
+      <Button rounded disabled={isEnableSignIn() ? false : true} onPress={()=>{setData(), clearText()}} style={styles.buttonAdd}>
         <Text style={styles.content}>Add</Text>
       </Button>
     </View>
   );
 }
-
-// export const MyForm = props => {
-
-//   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-//   // --- DateTime Picker --- //
-//   const showDatePicker = () => {
-//     setDatePickerVisibility(true);
-//   };
-
-//   const hideDatePicker = () => {
-//     setDatePickerVisibility(false);
-//   };
-
-//   const handleConfirm = date => {
-//     setTransDate(moment(date).format('YYYY-MM-DD'));
-//     hideDatePicker();
-//   };
-//   // ----------------------- //
-
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.item}>
-//           <View style={styles.iconRow}>
-//             <Icon ios='ios-cash-outline' android='cash-outline' style={styles.icon} />
-//             <TextInput
-//               style={styles.input}
-//               placeholder=" $"
-//               onChangeText={setCost}
-//               value={cost}
-//             />
-//           </View>
-//       </View>
-//       {/* <View style={styles.item}>
-//         <SelectPicker
-//           selectedValue={selectedPicker}
-//           onValueChange={(itemValue, itemIndex) => 
-//             setSelectedPicker(itemValue)}
-//         >
-//           <SelectPicker.Item label="Personal Car" value="car" />
-//           <SelectPicker.Item label="Taxi" value="taxi" />
-//           <SelectPicker.Item label="Bus" value="bus" />
-//         </SelectPicker>
-//       </View> */}
-//       <View style={styles.item}>
-//         <View style={styles.iconRow}>
-//           <Icon ios='ios-car-outline' android='car-outline' style={styles.icon} />
-//           <TextInput
-//             style={styles.input}
-//             placeholder="How do you go?"
-//             onChangeText={setTransType}
-//             value={transType}
-//           />
-//         </View>
-//       </View>
-//       <View style={styles.item}>
-//         <View style={styles.iconRow}>
-//           <Icon ios='ios-book-outline' android='book-outline' style={styles.icon} />
-//           <TextInput
-//             style={styles.input}
-//             placeholder="Where do you go?"
-//             onChangeText={setDestination}
-//             value={destination}
-//           />
-//         </View>
-//       </View>
-//       <View style={styles.item}>
-//         <View style={styles.iconRow}>
-//           <Icon ios='ios-calendar-outline' android='calendar-outline' style={styles.icon} />
-//           <Button transparent light onPress={showDatePicker} style={styles.button}>
-//             { !transDate ? <Text>Select Date</Text> : <Text>{moment(transDate).format('YYYY-MM-DD')}</Text> }
-//           </Button>
-//         </View>
-//         <DateTimePickerModal
-//           isVisible={isDatePickerVisible}
-//           mode="date"
-//           onConfirm={handleConfirm}
-//           onCancel={hideDatePicker}
-//           date={moment(transDate).toDate()}
-//         />
-//       </View>
-//       <Button rounded success onPress={setData} style={styles.buttonAdd}>
-//         <Text style={styles.content}>Add</Text>
-//       </Button>
-//     </View>
-//   );
-// };
 
 const styles = StyleSheet.create({
   container: {
@@ -238,6 +169,16 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   buttonAdd: {
+    height: 40,
+    width: 250,
+    justifyContent:'center',
+    alignSelf:'center',
+    marginLeft: 15,
+    marginTop: 30,
+    marginBottom: 10,
+  },
+  buttonDisable: {
+    backgroundColor: 'grey',
     height: 40,
     width: 250,
     justifyContent:'center',
